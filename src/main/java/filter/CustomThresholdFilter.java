@@ -7,7 +7,6 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.spi.FilterReply;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CustomThresholdFilter extends ThresholdFilter {
 
@@ -37,7 +36,7 @@ public class CustomThresholdFilter extends ThresholdFilter {
 
             ThrowableProxy throwableProxyImpl = (ThrowableProxy) throwableProxy;
             Throwable throwable = throwableProxyImpl.getThrowable();
-            if (ignoreClasses.contains(throwable.getClass())) {
+            if (throwable != null && ignoreClasses.contains(throwable.getClass())) {
                 return FilterReply.DENY;
             }
         }
