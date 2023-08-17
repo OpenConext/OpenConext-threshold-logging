@@ -4,11 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openconext</groupId>
     <artifactId>threshold-logger</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>threshold-logger</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <dependency-check-maven.version>8.3.1</dependency-check-maven.version>
+        <jackrabbit.version>2.10</jackrabbit.version>
+        <java.version>17</java.version>
+        <jupiter-api.version>5.10.0</jupiter-api.version>
+        <logback-classic.version>1.4.11</logback-classic.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <mockito.version>5.4.0</mockito.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -16,7 +24,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>${logback-classic.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -27,7 +35,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.3</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -38,7 +46,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>${maven-source-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -53,7 +61,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>2.10</version>
+                <version>${jackrabbit.version}</version>
             </extension>
         </extensions>
     </build>
@@ -69,5 +77,33 @@
             <url>dav:https://build.openconext.org/repository/public/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>security-updates</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${dependency-check-maven.version}</version>
+                        <configuration>
+                            <format>ALL</format>
+                            <failBuildOnCVSS>7</failBuildOnCVSS>
+                            <suppressionFile>release/src/suppressions/ignore.xml</suppressionFile>
+                            <failBuildOnAnyVulnerability>false</failBuildOnAnyVulnerability>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
